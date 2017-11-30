@@ -1,0 +1,6 @@
+framework module Pods_MedianCut_Tests {
+  umbrella header "Pods-MedianCut_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}

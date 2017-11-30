@@ -1,0 +1,6 @@
+framework module MedianCut {
+  umbrella header "MedianCut-umbrella.h"
+
+  export *
+  module * { export * }
+}
