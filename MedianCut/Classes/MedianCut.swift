@@ -13,7 +13,7 @@ import UIKit
 public class MedianCut {
     private var numOfColor = 16
     
-    func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
+    public func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
         DispatchQueue.main.async {
             
             if numberOfColors < 16 {
