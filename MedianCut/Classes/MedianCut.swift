@@ -11,9 +11,9 @@ import Foundation
 import UIKit
 
 public class MedianCut {
-    private var numOfColor = 16
+    private static var numOfColor = 16
     
-    public func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
+    public static func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
         DispatchQueue.main.async {
             
             if numberOfColors < 16 {
@@ -42,7 +42,7 @@ public class MedianCut {
         }
     }
     
-    private func getColorTables(pixels: [Pixel], colorTable: inout [UIColor], count: Int) {
+    private static func getColorTables(pixels: [Pixel], colorTable: inout [UIColor], count: Int) {
         
         if count == Int(log2(Double(numOfColor))) {
             
@@ -72,7 +72,7 @@ public class MedianCut {
         
     }
     
-    private func initializePixelData(image: UIImage) -> [Pixel] {
+    private static func initializePixelData(image: UIImage) -> [Pixel] {
         
         let bmp = image.cgImage!.dataProvider!.data
         let data: UnsafePointer<UInt8> = CFDataGetBytePtr(bmp)
@@ -94,7 +94,7 @@ public class MedianCut {
         return pixels
     }
     
-    private func getDominantSorted(pixels: [Pixel]) -> [Pixel]{
+    private static func getDominantSorted(pixels: [Pixel]) -> [Pixel]{
         var pixels = pixels
         
         var rRange: (CGFloat,CGFloat) = (1,0)
@@ -142,7 +142,7 @@ public class MedianCut {
         return pixels
     }
     
-    private func getAverageColor(pixels: [Pixel]) -> UIColor {
+    private static func getAverageColor(pixels: [Pixel]) -> UIColor {
         
         var r = CGFloat(0)
         var g = CGFloat(0)
@@ -183,7 +183,7 @@ public class MedianCut {
         
     }
     
-    private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+    private static func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
         let size = image.size
         
         let widthRatio  = targetSize.width  / size.width
