@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'MedianCut_Example' do
+  pod 'MedianCut', :path => '../'
+
+  target 'MedianCut_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
