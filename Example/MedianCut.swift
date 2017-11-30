@@ -12,31 +12,33 @@ import UIKit
 public class MedianCut {
     private var numOfColor = 16
     
-    func getColors(image: UIImage, numberOfColors: Int) -> [UIColor] {
-        
+    func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
+        DispatchQueue.main.async {
+            
         if numberOfColors < 16 {
             print("Need at least 16 colors")
-            return
+            completion([])
         }
         
         if log2(Double(numberOfColors)) - Double(Int(log2(Double(numberOfColors)))) != 0 {
             print("number of colors must be an exponetial of 2")
-            return
+            completion([])
         }
         
         self.numOfColor = numberOfColors
         
-        let resizedImage = resizeImage(image: uploadSelect.image!, targetSize: CGSize(width: 200, height: 200))
+        let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 200, height: 200))
         
-        let iPixels = initializePixelData(image: resizedImage)
+        let iPixels = self.initializePixelData(image: resizedImage)
         
         var colorTables: [UIColor] = []
-        getColorTables(pixels: iPixels, colorTable: &colorTables, count: 0)
-        
+            
+        self.getColorTables(pixels: iPixels, colorTable: &colorTables, count: 0)
         
         colorTables = colorTables.uniqueColors
         
-        return colorTables
+        completion(colorTables)
+        }
     }
     
     private func getColorTables(pixels: [Pixel], colorTable: inout [UIColor], count: Int) {
@@ -268,5 +270,26 @@ extension UIColor {
         }
         
         return true
+    }
+}
+
+extension Array where Element:UIColor {
+    var uniqueColors: [UIColor] {
+        var set = Set<UIColor>() //the unique list kept in a Set for fast retrieval
+        var arrayOrdered = [UIColor]() //keeping the unique list of elements but ordered
+        for value in self {
+            if !set.contains(where: { (color) -> Bool in
+                if value.isSimilar(to: color) {
+                    return true
+                } else {
+                    return false
+                }
+            }) {
+                set.insert(value)
+                arrayOrdered.append(value)
+            }
+        }
+        
+        return arrayOrdered
     }
 }
