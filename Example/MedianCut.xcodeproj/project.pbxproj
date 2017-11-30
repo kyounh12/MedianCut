@@ -14,7 +14,6 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
 		856C53AEEE27F7D22B773E52 /* Pods_MedianCut_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2ECAB5673957E59140D1658F /* Pods_MedianCut_Tests.framework */; };
-		B4FB9B3C1FD05E70009CA419 /* MedianCut.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4FB9B3B1FD05E70009CA419 /* MedianCut.swift */; };
 		BCD83E2FED53302AE4487510 /* Pods_MedianCut_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E1D6AC840E48A234E66872 /* Pods_MedianCut_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,7 +44,6 @@
 		7CAB613F7D7723A551F38F87 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		945AD3D11FED701E9A9CDC6F /* Pods-MedianCut_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedianCut_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MedianCut_Tests/Pods-MedianCut_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B062070FD50FBFC0A2D8D2F6 /* Pods-MedianCut_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedianCut_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MedianCut_Tests/Pods-MedianCut_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		B4FB9B3B1FD05E70009CA419 /* MedianCut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedianCut.swift; sourceTree = "<group>"; };
 		BEAF3440F4A125216DC9D477 /* Pods-MedianCut_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedianCut_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-MedianCut_Example/Pods-MedianCut_Example.release.xcconfig"; sourceTree = "<group>"; };
 		C29473356882C0CD02F504CC /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		EC59EB9B55117AC45788E27F /* Pods-MedianCut_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MedianCut_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MedianCut_Example/Pods-MedianCut_Example.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,7 +87,6 @@
 				607FACD21AFB9204008FA782 /* Example for MedianCut */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
-				B4FB9B3B1FD05E70009CA419 /* MedianCut.swift */,
 				5A1FC059A8B883E7A534183B /* Pods */,
 				A0C0C9A46A32DF84C2A88AF1 /* Frameworks */,
 			);
@@ -373,7 +370,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B4FB9B3C1FD05E70009CA419 /* MedianCut.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);

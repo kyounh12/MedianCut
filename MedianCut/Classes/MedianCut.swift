@@ -1,3 +1,4 @@
+
 //
 //  MedianCut.swift
 //  MedianCut_Example
@@ -15,29 +16,29 @@ public class MedianCut {
     func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
         DispatchQueue.main.async {
             
-        if numberOfColors < 16 {
-            print("Need at least 16 colors")
-            completion([])
-        }
-        
-        if log2(Double(numberOfColors)) - Double(Int(log2(Double(numberOfColors)))) != 0 {
-            print("number of colors must be an exponetial of 2")
-            completion([])
-        }
-        
-        self.numOfColor = numberOfColors
-        
-        let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 200, height: 200))
-        
-        let iPixels = self.initializePixelData(image: resizedImage)
-        
-        var colorTables: [UIColor] = []
+            if numberOfColors < 16 {
+                print("Need at least 16 colors")
+                completion([])
+            }
             
-        self.getColorTables(pixels: iPixels, colorTable: &colorTables, count: 0)
-        
-        colorTables = colorTables.uniqueColors
-        
-        completion(colorTables)
+            if log2(Double(numberOfColors)) - Double(Int(log2(Double(numberOfColors)))) != 0 {
+                print("number of colors must be an exponetial of 2")
+                completion([])
+            }
+            
+            self.numOfColor = numberOfColors
+            
+            let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 200, height: 200))
+            
+            let iPixels = self.initializePixelData(image: resizedImage)
+            
+            var colorTables: [UIColor] = []
+            
+            self.getColorTables(pixels: iPixels, colorTable: &colorTables, count: 0)
+            
+            colorTables = colorTables.uniqueColors
+            
+            completion(colorTables)
         }
     }
     

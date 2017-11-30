@@ -10,7 +10,7 @@
 		0C100450144E24F22D74D46C8DC63AF2 /* MedianCut-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9168FEB04F8F2B9CD321C76A06163026 /* MedianCut-dummy.m */; };
 		1613929CB12B70D00A4DF4622D9B3645 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
 		3324175F38E8FBFFA3D7CCBF7EC1AC76 /* MedianCut-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C8451F7B781CB15AC7E4C765971C70D /* MedianCut-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		38E270AA0B20C4EC98E87DB3B7F5BAF3 /* ReplaceMe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20253E542A6F7386F30C1854F022A33A /* ReplaceMe.swift */; };
+		38E270AA0B20C4EC98E87DB3B7F5BAF3 /* MedianCut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20253E542A6F7386F30C1854F022A33A /* MedianCut.swift */; };
 		3B1B19F4ADF5777D0A9AE1B63B57DD9F /* Pods-MedianCut_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2452984944B3C46A7649220F480CBCD1 /* Pods-MedianCut_Example-dummy.m */; };
 		448FDEAA60F8C37B4EBFEC9B217F7873 /* Pods-MedianCut_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6ADE94E1DA9B4E4B48E4D590D16BB556 /* Pods-MedianCut_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6236F72A48D46256A32F59444C92F98B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
@@ -33,7 +33,7 @@
 		092BF6190D8999124104582D13394969 /* Pods-MedianCut_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MedianCut_Example-frameworks.sh"; sourceTree = "<group>"; };
 		0D0F33EED4921D3550216B97DC8B1FA4 /* Pods-MedianCut_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MedianCut_Tests.modulemap"; sourceTree = "<group>"; };
 		13F5FD7CA614065E48D17EC5F3700C3D /* Pods-MedianCut_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MedianCut_Example.release.xcconfig"; sourceTree = "<group>"; };
-		20253E542A6F7386F30C1854F022A33A /* ReplaceMe.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ReplaceMe.swift; path = MedianCut/Classes/ReplaceMe.swift; sourceTree = "<group>"; };
+		20253E542A6F7386F30C1854F022A33A /* MedianCut.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MedianCut.swift; path = MedianCut/Classes/MedianCut.swift; sourceTree = "<group>"; };
 		2452984944B3C46A7649220F480CBCD1 /* Pods-MedianCut_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MedianCut_Example-dummy.m"; sourceTree = "<group>"; };
 		38251D84BC7E0484B219CCDA3E57626E /* MedianCut-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MedianCut-prefix.pch"; sourceTree = "<group>"; };
 		3C8451F7B781CB15AC7E4C765971C70D /* MedianCut-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MedianCut-umbrella.h"; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 		B780E202AF43EAC76AB53130CC2E0CC7 /* MedianCut */ = {
 			isa = PBXGroup;
 			children = (
-				20253E542A6F7386F30C1854F022A33A /* ReplaceMe.swift */,
+				20253E542A6F7386F30C1854F022A33A /* MedianCut.swift */,
 				0DF1F18971F5FCD642C058EAFE1821D7 /* Support Files */,
 			);
 			name = MedianCut;
@@ -322,7 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C100450144E24F22D74D46C8DC63AF2 /* MedianCut-dummy.m in Sources */,
-				38E270AA0B20C4EC98E87DB3B7F5BAF3 /* ReplaceMe.swift in Sources */,
+				38E270AA0B20C4EC98E87DB3B7F5BAF3 /* MedianCut.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

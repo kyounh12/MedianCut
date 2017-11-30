@@ -10,7 +10,6 @@
 #endif
 #endif
 
-
 FOUNDATION_EXPORT double MedianCutVersionNumber;
 FOUNDATION_EXPORT const unsigned char MedianCutVersionString[];
 
