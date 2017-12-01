@@ -11,8 +11,8 @@ import Foundation
 import UIKit
 
 public class MedianCut {
-    private static var numOfColor = 16
-    
+    private static var numOfColor = 256
+    private static var data: UnsafePointer<UInt8>!
     public static func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
         DispatchQueue.main.async {
             
@@ -28,156 +28,102 @@ public class MedianCut {
             
             self.numOfColor = numberOfColors
             
-            let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 200, height: 200))
+            let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 100, height: 100))
             
-            let iPixels = self.initializePixelData(image: resizedImage)
+            let bmp = image.cgImage!.dataProvider!.data
+            data = CFDataGetBytePtr(bmp)
+            
+            var pointers: [Int] = []
+            for i in 0..<Int(resizedImage.size.width * resizedImage.scale * resizedImage.size.height * resizedImage.scale) {
+                pointers.append(i*4)
+            }
             
             var colorTables: [UIColor] = []
             
-            self.getColorTables(pixels: iPixels, colorTable: &colorTables, count: 0)
+            self.getColorTables(pointers: pointers, colorTable: &colorTables, count: 0)
             
             colorTables = colorTables.uniqueColors
+            
+            colorTables = colorTables.sorted(by: { (a, b) -> Bool in
+                if a.hueValue == b.hueValue {
+                    if a.brightnessValue == b.brightnessValue {
+                        return a.saturationValue > b.saturationValue
+                    } else {
+                        return a.brightnessValue > b.brightnessValue
+                    }
+                } else {
+                    return a.hueValue > b.hueValue
+                }
+            })
             
             completion(colorTables)
         }
     }
     
-    private static func getColorTables(pixels: [Pixel], colorTable: inout [UIColor], count: Int) {
+    private static func getColorTables(pointers: [Int], colorTable: inout [UIColor], count: Int) {
         
         if count == Int(log2(Double(numOfColor))) {
-            
-            colorTable.append(getAverageColor(pixels: getDominantSorted(pixels: pixels)))
+            colorTable.append(getAverageColor(pointers: pointers))
             return
         }
         
-        let sortedPixels = getDominantSorted(pixels: pixels)
+        let sortedPointers = getDominantSorted(pointers: pointers)
         
-        let separatorIndex = sortedPixels.count / 2
+        let separatorIndex = sortedPointers.count / 2
         
-        var front: [Pixel] = []
-        var rear: [Pixel] = []
+        let front = sortedPointers[..<separatorIndex]
+        let rear = sortedPointers[separatorIndex...]
         
-        for i in 0..<pixels.count {
-            if i <= separatorIndex {
-                front.append(pixels[i])
-            } else {
-                rear.append(pixels[i])
-            }
-        }
         
         let count = count + 1
         
-        getColorTables(pixels: front, colorTable: &colorTable, count: count)
-        getColorTables(pixels: rear, colorTable: &colorTable, count: count)
+        getColorTables(pointers: Array(front), colorTable: &colorTable, count: count)
+        getColorTables(pointers: Array(rear), colorTable: &colorTable, count: count)
         
     }
     
-    private static func initializePixelData(image: UIImage) -> [Pixel] {
+    private static func getDominantSorted(pointers: [Int]) -> [Int]{
+        var pointers = pointers
         
-        let bmp = image.cgImage!.dataProvider!.data
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(bmp)
+        var rRange = (255,0)
+        var gRange = (255,0)
+        var bRange = (255,0)
         
-        var pixels: [Pixel] = []
-        let row = image.size.width * image.scale
-        let col = image.size.height * image.scale
-        
-        for i in 0..<Int(row) {
-            for j in 0..<Int(col) {
-                let pixelInfo: Int = ((Int(col) * Int(i)) + Int(j)) * 4
-                let rgb = [CGFloat(data[pixelInfo+2]) / CGFloat(255), CGFloat(data[pixelInfo+1]) / CGFloat(255), CGFloat(data[pixelInfo]) / CGFloat(255)]
-                let pixel = Pixel(rgb: rgb)
-                pixels.append(pixel)
-                
-            }
+        for pointer in pointers {
+            rRange = (min(rRange.0, Int(data[pointer + 2])),max(rRange.1, Int(data[pointer + 2])))
+            gRange = (min(gRange.0, Int(data[pointer + 1])),max(gRange.1, Int(data[pointer + 1])))
+            bRange = (min(bRange.0, Int(data[pointer])),max(bRange.1, Int(data[pointer])))
         }
         
-        return pixels
-    }
-    
-    private static func getDominantSorted(pixels: [Pixel]) -> [Pixel]{
-        var pixels = pixels
-        
-        var rRange: (CGFloat,CGFloat) = (1,0)
-        var gRange: (CGFloat,CGFloat) = (1,0)
-        var bRange: (CGFloat,CGFloat) = (1,0)
-        
-        for pixel in pixels {
-            rRange = (min(rRange.0, pixel.rgb[0]),max(rRange.1, pixel.rgb[0]))
-            gRange = (min(gRange.0, pixel.rgb[1]),max(gRange.1, pixel.rgb[1]))
-            bRange = (min(bRange.0, pixel.rgb[2]),max(bRange.1, pixel.rgb[2]))
-        }
-        
-        let rangeTable = [(rRange.1 - rRange.0), (gRange.1 - gRange.0), (bRange.1 - bRange.0)]
+        let rangeTable = [(bRange.1 - bRange.0), (gRange.1 - gRange.0), (rRange.1 - rRange.0)]
         
         let dominantIndex = rangeTable.index(of: max(rangeTable[0], max(rangeTable[1], rangeTable[2])))!
         
-        pixels.sort { (a, b) -> Bool in
-            return (a.rgb[dominantIndex] > b.rgb[dominantIndex])
+        pointers.sort { (a, b) -> Bool in
+            return data[a+dominantIndex] > data[b+dominantIndex]
         }
         
-        return pixels
+        return pointers
     }
+
     
-    private func getTrivialSorted(pixels: [Pixel]) -> [Pixel]{
-        var pixels = pixels
+    private static func getAverageColor(pointers: [Int]) -> UIColor {
         
-        var rRange: (CGFloat,CGFloat) = (1,0)
-        var gRange: (CGFloat,CGFloat) = (1,0)
-        var bRange: (CGFloat,CGFloat) = (1,0)
-        
-        for pixel in pixels {
-            rRange = (min(rRange.0, pixel.rgb[0]),max(rRange.1, pixel.rgb[0]))
-            gRange = (min(gRange.0, pixel.rgb[1]),max(gRange.1, pixel.rgb[1]))
-            bRange = (min(bRange.0, pixel.rgb[2]),max(bRange.1, pixel.rgb[2]))
-        }
-        
-        let rangeTable = [(rRange.1 - rRange.0), (gRange.1 - gRange.0), (bRange.1 - bRange.0)]
-        
-        let dominantIndex = rangeTable.index(of: max(rangeTable[0], max(rangeTable[1], rangeTable[2])))!
-        
-        pixels.sort { (a, b) -> Bool in
-            return (a.rgb[dominantIndex] < b.rgb[dominantIndex])
-        }
-        
-        return pixels
-    }
-    
-    private static func getAverageColor(pixels: [Pixel]) -> UIColor {
         
         var r = CGFloat(0)
         var g = CGFloat(0)
         var b = CGFloat(0)
         
-        for pixel in pixels {
-            r += pixel.rgb[0]
-            g += pixel.rgb[1]
-            b += pixel.rgb[2]
+        for pointer in pointers {
+            r += CGFloat(data[pointer + 2])
+            g += CGFloat(data[pointer + 1])
+            b += CGFloat(data[pointer])
         }
         
-        r /= CGFloat(pixels.count)
-        g /= CGFloat(pixels.count)
-        b /= CGFloat(pixels.count)
+        r = r/CGFloat(pointers.count)/255
+        g = g/CGFloat(pointers.count)/255
+        b = b/CGFloat(pointers.count)/255
         
-        //        let ar = r
-        //        let ag = g
-        //        let ab = b
-        //
-        //        r = 0
-        //        g = 0
-        //        b = 0
-        //
-        //        for pixel in pixels {
-        //            var diff = abs(pixel.rgb[0] - ar)
-        //            diff += abs(pixel.rgb[1] - ag) + abs(pixel.rgb[2] - ab)
-        //            var oDiff = abs(r - ar)
-        //            oDiff += abs(g - ag) + abs(b - ab)
-        //
-        //            if diff < oDiff {
-        //                r = pixel.rgb[0]
-        //                g = pixel.rgb[1]
-        //                b = pixel.rgb[2]
-        //            }
-        //        }
         
         return UIColor(red: r, green: g, blue: b, alpha: 1)
         
@@ -208,17 +154,6 @@ public class MedianCut {
         
         return newImage!
     }
-    
-    private struct Pixel{
-        var rgb = Array.init(repeating: CGFloat(0), count: 3)
-        //        var r: CGFloat
-        //        var g: CGFloat
-        //        var b: CGFloat
-    }
-    
-    //    func minAndMax()-> {
-    //
-    //    }
     
     
 }
@@ -260,13 +195,13 @@ extension UIColor {
     }
     
     func isSimilar(to: UIColor) -> Bool {
-        if abs(self.redValue - to.redValue) > 0.05 {
+        if abs(self.redValue - to.redValue) > 0.2 {
             return false
         }
-        if abs(self.blueValue - to.blueValue) > 0.05 {
+        if abs(self.blueValue - to.blueValue) > 0.2 {
             return false
         }
-        if abs(self.greenValue - to.greenValue) > 0.05 {
+        if abs(self.greenValue - to.greenValue) > 0.2 {
             return false
         }
         
