@@ -11,9 +11,12 @@ import Foundation
 import UIKit
 
 public class MedianCut {
-    private static var numOfColor = 256
-    private static var data: UnsafePointer<UInt8>!
-    public static func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
+    private var numOfColor = 256
+    private var data: UnsafePointer<UInt8>!
+    
+    public static let instance = MedianCut()
+    
+    public func getColors(image: UIImage, numberOfColors: Int, completion: @escaping ([UIColor]) -> Void) {
         DispatchQueue.main.async {
             
             if numberOfColors < 16 {
@@ -31,7 +34,7 @@ public class MedianCut {
             let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 100, height: 100))
             
             let bmp = image.cgImage!.dataProvider!.data
-            data = CFDataGetBytePtr(bmp)
+            self.data = CFDataGetBytePtr(bmp)
             
             var pointers: [Int] = []
             for i in 0..<Int(resizedImage.size.width * resizedImage.scale * resizedImage.size.height * resizedImage.scale) {
@@ -60,7 +63,7 @@ public class MedianCut {
         }
     }
     
-    private static func getColorTables(pointers: [Int], colorTable: inout [UIColor], count: Int) {
+    private func getColorTables(pointers: [Int], colorTable: inout [UIColor], count: Int) {
         
         if count == Int(log2(Double(numOfColor))) {
             colorTable.append(getAverageColor(pointers: pointers))
@@ -82,7 +85,7 @@ public class MedianCut {
         
     }
     
-    private static func getDominantSorted(pointers: [Int]) -> [Int]{
+    private func getDominantSorted(pointers: [Int]) -> [Int]{
         var pointers = pointers
         
         var rRange = (255,0)
@@ -107,7 +110,7 @@ public class MedianCut {
     }
 
     
-    private static func getAverageColor(pointers: [Int]) -> UIColor {
+    private func getAverageColor(pointers: [Int]) -> UIColor {
         
         
         var r = CGFloat(0)
@@ -129,7 +132,7 @@ public class MedianCut {
         
     }
     
-    private static func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+    private func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
         let size = image.size
         
         let widthRatio  = targetSize.width  / size.width
