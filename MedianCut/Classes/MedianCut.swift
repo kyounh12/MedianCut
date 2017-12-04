@@ -33,7 +33,7 @@ public class MedianCut {
             
             let resizedImage = self.resizeImage(image: image, targetSize: CGSize(width: 100, height: 100))
             
-            let bmp = image.cgImage!.dataProvider!.data
+            let bmp = resizedImage.cgImage!.dataProvider!.data
             self.data = CFDataGetBytePtr(bmp)
             
             var pointers: [Int] = []
