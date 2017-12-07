@@ -102,11 +102,36 @@ public class MedianCut {
         
         let dominantIndex = rangeTable.index(of: max(rangeTable[0], max(rangeTable[1], rangeTable[2])))!
         
-        pointers.sort { (a, b) -> Bool in
-            return data[a+dominantIndex] > data[b+dominantIndex]
-        }
+//        pointers.sort { (a, b) -> Bool in
+//            return data[a+dominantIndex] > data[b+dominantIndex]
+//        }
+        pointers = countSort(pointers: pointers, dominantIndex: dominantIndex)
         
         return pointers
+    }
+    
+    private func countSort(pointers: [Int], dominantIndex: Int) -> [Int] {
+        
+        var sumArray = Array<Int>.init(repeating: 0, count: 256)
+        var sortedArray = Array<Int>.init(repeating: 0, count: pointers.count)
+        
+        for pointer in pointers {
+            let value = Int(data[pointer + dominantIndex])
+            sumArray[value] = sumArray[value] + 1
+        }
+        
+        for i in 1..<sumArray.count {
+            sumArray[i] = sumArray[i-1] + sumArray[i]
+        }
+        
+        for pointer in pointers {
+            let value = Int(data[pointer + dominantIndex])
+            
+            sortedArray[sumArray[value] - 1] = pointer
+            sumArray[value] = sumArray[value] - 1
+        }
+        
+        return sortedArray
     }
 
     
@@ -232,3 +257,4 @@ extension Array where Element:UIColor {
         return arrayOrdered
     }
 }
+
