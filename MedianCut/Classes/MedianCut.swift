@@ -163,22 +163,27 @@ public class MedianCut {
         let widthRatio  = targetSize.width  / size.width
         let heightRatio = targetSize.height / size.height
         
+        let ratio = size.height / size.width
+        
         // Figure out what our orientation is, and use that to form the rectangle
         var newSize: CGSize
         if(widthRatio > heightRatio) {
-            newSize = CGSize(width: size.width * heightRatio,height: size.height * heightRatio)
+            newSize = CGSize(width: floor(targetSize.height / ratio) ,height: targetSize.height - 4)
         } else {
-            newSize = CGSize(width: size.width * widthRatio, height: size.height * widthRatio)
+            newSize = CGSize(width: targetSize.width - 4, height: floor(targetSize.width * ratio))
         }
         
         // This is the rect that we've calculated out and this is what is actually used below
         let rect = CGRect(x: 0, y:0, width: newSize.width, height: newSize.height)
         
         // Actually do the resizing to the rect using the ImageContext stuff
-        UIGraphicsBeginImageContextWithOptions(newSize, false, 0)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1)
         image.draw(in: rect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        //
+        //        let data = UIImageJPEGRepresentation(newImage!, 1)
+        //        let resizedImage = UIImage(data: data!)
         
         return newImage!
     }
