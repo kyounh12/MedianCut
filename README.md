@@ -37,4 +37,4 @@ junseok_lee, kyounh12@snu.ac.kr
 ## License
 
 MedianCut is available under the MIT license. See the LICENSE file for more info.
-# MedianCut
+
