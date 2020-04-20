@@ -30,7 +30,7 @@ public class MedianCut {
      - Parameter resizeTargetSize: Size to apply when resizing image to get colors from image. Providing larger size increases time to get results. If resized image's number of pixels is smaller than 2^(`colorDepth`), result array may only contains a single color. Default value is 256 * 256.
      
      */
-    convenience init(colorDepth: Int = 8, resizeTargetSize: CGSize = CGSize(width: 256, height: 256)) {
+    public convenience init(colorDepth: Int = 8, resizeTargetSize: CGSize = CGSize(width: 256, height: 256)) {
         self.init()
         
         self.colorDepth = max(colorDepth, 4)
@@ -47,9 +47,7 @@ public class MedianCut {
      */
     public func getColors(image: UIImage, completion: @escaping (_ succeed: Bool, _ colors: [UIColor]) -> Void) {
         
-        DispatchQueue.main.async { [weak self] in
-            
-            guard let self = self else {completion(false, []); return}
+        DispatchQueue.main.async {
             
             // Resize image to improve performance and get dominant colors
             let _resizedImage: UIImage? = self.resizeImage(image: image, targetSize: self.resizeTargetSize)

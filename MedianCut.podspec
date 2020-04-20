@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MedianCut'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'A image color extract library based on Median Cut algorithm'
 
 # This description is used to generate tags and improve search results.
@@ -31,7 +31,7 @@ A image color extract library based on Median Cut algorithm.
 
 
   s.ios.deployment_target = '9.0'
-
+  s.swift_versions = "5.0"
   s.source_files = 'MedianCut/Classes/**/*'
   
 end
