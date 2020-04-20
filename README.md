@@ -13,11 +13,11 @@ let medianCut = MedianCut(colorDepth: 4, resizeTargetSize: CGSize(width:256, hei
 
 // Get Colors
 medianCut.getColors(image: your_image) { (succeeded, colors) in
-if (succeeded) {
-// ...do sth with colors
-} else {
-// ...handle errors
-}
+  if (succeeded) {
+    // ...do sth with colors
+  } else {
+    // ...handle errors
+  }
 }
 ```
 
@@ -37,4 +37,4 @@ junseok_lee, kyounh12@snu.ac.kr
 ## License
 
 MedianCut is available under the MIT license. See the LICENSE file for more info.
-# MedianCut
+
