@@ -1,15 +1,25 @@
 # MedianCut
 
-[![CI Status](http://img.shields.io/travis/junseok_lee/MedianCut.svg?style=flat)](https://travis-ci.org/junseok_lee/MedianCut)
-[![Version](https://img.shields.io/cocoapods/v/MedianCut.svg?style=flat)](http://cocoapods.org/pods/MedianCut)
 [![License](https://img.shields.io/cocoapods/l/MedianCut.svg?style=flat)](http://cocoapods.org/pods/MedianCut)
 [![Platform](https://img.shields.io/cocoapods/p/MedianCut.svg?style=flat)](http://cocoapods.org/pods/MedianCut)
 
+A simple color extraction library based on [median cut algorithm](https://en.wikipedia.org/wiki/Median_cut#Implementation_of_color_quantization).
+
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+```swift
+// Init
+let medianCut = MedianCut(colorDepth: 4, resizeTargetSize: CGSize(width:256, height: 256))
 
-## Requirements
+// Get Colors
+medianCut.getColors(image: your_image) { (succeeded, colors) in
+if (succeeded) {
+// ...do sth with colors
+} else {
+// ...handle errors
+}
+}
+```
 
 ## Installation
 
