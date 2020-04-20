@@ -47,7 +47,7 @@ public class MedianCut {
      */
     public func getColors(image: UIImage, completion: @escaping (_ succeed: Bool, _ colors: [UIColor]) -> Void) {
         
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .background).async {
             
             // Resize image to improve performance and get dominant colors
             let _resizedImage: UIImage? = self.resizeImage(image: image, targetSize: self.resizeTargetSize)
