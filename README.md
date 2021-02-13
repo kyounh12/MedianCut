@@ -5,7 +5,7 @@
 
 A simple color extraction library based on [median cut algorithm](https://en.wikipedia.org/wiki/Median_cut#Implementation_of_color_quantization).
 
-<img src="https://moly-blog.s3.ap-northeast-2.amazonaws.com/django-summernote/2020-04-20/d6ccbea3-d0b3-4dbf-87fe-d8d96f695b3c.png" width="90%"></img>
+<img src="https://imgur.com/mJeXC9b.png" width="90%"></img>
 
 ## Example
 
