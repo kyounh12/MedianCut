@@ -15,6 +15,7 @@ public class MedianCut {
      Data pointer of given image.
      */
     private var data: UnsafePointer<UInt8>!
+    private var componentLayout: ComponentLayout!
     
     /**
      colorDepth of MedianCut.
@@ -62,13 +63,14 @@ public class MedianCut {
             }
             
             // Get rgba array pointer
+            self.componentLayout = resizedImage.cgImage?.bitmapInfo.componentLayout ?? .rgba
             self.data = CFDataGetBytePtr(bmp)
             
-            // Pointers array saving 'blue' value index in image rbga data array
+            // Pointers array saving 'blue' value index in image rgba data array
             var pointers: [Int] = []
             
             // Data array has (number of pixels * 4) elements since each pixel is represented with 4 values (r,g,b,a)
-            // To get all 'blue' value index, simply loop through 0 to pixel numbers and multiply by 4.
+            // To get all 'initial' value index, simply loop through 0 to pixel numbers and multiply by 4.
             for i in 0..<Int(resizedImage.size.width * resizedImage.scale * resizedImage.size.height * resizedImage.scale) {
                 pointers.append(i*4)
             }
@@ -109,7 +111,9 @@ public class MedianCut {
         
         // If it's the last depth of the algorithm, get average color of colors and insert to result array.
         if depth == colorDepth {
-            colorTable.append(getAverageColor(pointers: pointers))
+            if pointers.count != 0 {
+                colorTable.append(getAverageColor(pointers: pointers))
+            }
             return
         }
         
@@ -145,14 +149,29 @@ public class MedianCut {
         
         // Get RGB min, max values in data within given pointer range.
         for pointer in pointers {
-            rRange = (min(rRange.0, Int(data[pointer + 2])),max(rRange.1, Int(data[pointer + 2])))
-            gRange = (min(gRange.0, Int(data[pointer + 1])),max(gRange.1, Int(data[pointer + 1])))
-            bRange = (min(bRange.0, Int(data[pointer])),max(bRange.1, Int(data[pointer])))
+            let red = Int(data[pointer + componentLayout.getRedIndex()])
+            let green = Int(data[pointer + componentLayout.getGreenIndex()])
+            let blue = Int(data[pointer + componentLayout.getBlueIndex()])
+            
+            rRange = (min(rRange.0, red),max(rRange.1, red))
+            gRange = (min(gRange.0, green),max(gRange.1, green))
+            bRange = (min(bRange.0, blue),max(bRange.1, blue))
         }
-        
+
         // Get one between red, green and blue value that has the greatest range.
-        let rangeTable = [(bRange.1 - bRange.0), (gRange.1 - gRange.0), (rRange.1 - rRange.0)]
-        let dominantIndex = rangeTable.firstIndex(of: max(rangeTable[0], max(rangeTable[1], rangeTable[2])))!
+        let rangeTable = [(rRange.1 - rRange.0), (gRange.1 - gRange.0), (bRange.1 - bRange.0)]
+        var dominantIndex: Int {
+            let dominantRange = rangeTable.firstIndex(of: max(rangeTable[0], max(rangeTable[1], rangeTable[2])))!
+            
+            switch dominantRange {
+            case 0:
+                return componentLayout.getRedIndex()
+            case 1:
+                return componentLayout.getGreenIndex()
+            default:
+                return componentLayout.getBlueIndex()
+            }
+        }
         
         // Sort pointers by dominant color element.
         pointers = countSort(pointers: pointers, dominantIndex: dominantIndex)
@@ -214,9 +233,9 @@ public class MedianCut {
         
         // Sum up each RGB values
         for pointer in pointers {
-            r += CGFloat(data[pointer + 2])
-            g += CGFloat(data[pointer + 1])
-            b += CGFloat(data[pointer])
+            r += CGFloat(data[pointer + componentLayout.getRedIndex()])
+            g += CGFloat(data[pointer + componentLayout.getGreenIndex()])
+            b += CGFloat(data[pointer + componentLayout.getBlueIndex()])
         }
         
         // Get average of each RGB values
@@ -250,9 +269,9 @@ public class MedianCut {
         // Figure out resized image size.
         var newSize: CGSize
         if(widthRatio > heightRatio) {
-            newSize = CGSize(width: floor(targetSize.height / ratio) ,height: targetSize.height - 4)
+            newSize = CGSize(width: floor(targetSize.height / ratio), height: floor(targetSize.height))
         } else {
-            newSize = CGSize(width: targetSize.width - 4, height: floor(targetSize.width * ratio))
+            newSize = CGSize(width: floor(targetSize.width), height: floor(targetSize.width * ratio))
         }
         
         // Make a rect to use to draw resized image on.
@@ -366,5 +385,90 @@ extension Array where Element:UIColor {
         }
         
         return arrayOrdered
+    }
+}
+
+fileprivate extension CGBitmapInfo {
+    var componentLayout: ComponentLayout? {
+        guard let alphaInfo = CGImageAlphaInfo(rawValue: rawValue & Self.alphaInfoMask.rawValue) else { return nil }
+        let isLittleEndian = contains(.byteOrder32Little)
+
+        if alphaInfo == .none {
+            return isLittleEndian ? .bgr : .rgb
+        }
+        let alphaIsFirst = alphaInfo == .premultipliedFirst || alphaInfo == .first || alphaInfo == .noneSkipFirst
+
+        if isLittleEndian {
+            return alphaIsFirst ? .bgra : .abgr
+        } else {
+            return alphaIsFirst ? .argb : .rgba
+        }
+    }
+}
+
+fileprivate enum ComponentLayout {
+    case bgra
+    case abgr
+    case argb
+    case rgba
+    case bgr
+    case rgb
+
+    var count: Int {
+        switch self {
+        case .bgr, .rgb: return 3
+        default: return 4
+        }
+    }
+
+    func getRedIndex() -> Int {
+        switch self {
+        case .bgra:
+            return 2
+        case .abgr:
+            return 3
+        case .argb:
+            return 1
+        case .rgba:
+            return 0
+        case .bgr:
+            return 2
+        case .rgb:
+            return 0
+        }
+    }
+    
+    func getGreenIndex() -> Int {
+        switch self {
+        case .bgra:
+            return 1
+        case .abgr:
+            return 2
+        case .argb:
+            return 3
+        case .rgba:
+            return 1
+        case .bgr:
+            return 1
+        case .rgb:
+            return 1
+        }
+    }
+    
+    func getBlueIndex() -> Int {
+        switch self {
+        case .bgra:
+            return 0
+        case .abgr:
+            return 1
+        case .argb:
+            return 3
+        case .rgba:
+            return 2
+        case .bgr:
+            return 0
+        case .rgb:
+            return 2
+        }
     }
 }
